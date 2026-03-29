@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ModernShop - Your Premium E-Commerce Store</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navigation Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logo-section">
+                <i class="fa fa-shopping-bag logo-icon"></i>
+                <div class="logo">ModernShop</div>
+            </div>
+            
+            <div class="search-container">
+                <input id="search" type="text" placeholder="🔍 Search products...">
+            </div>
+            
+            <div class="header-actions">
+                <button class="auth-btn" onclick="showLogin()">
+                    <i class="fa fa-user"></i> Login
+                </button>
+                <div class="cart-btn" onclick="toggleCart()" title="Wishlist">
+                    <i class="fa-regular fa-heart"></i>
+                    <span id="wishlist-count" class="badge">0</span>
+                </div>
+                <div class="cart-btn" onclick="toggleCart()" title="Shopping Cart">
+                    <i class="fa fa-shopping-cart"></i>
+                    <span id="cart-count" class="badge">0</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>Discover Amazing Products</h1>
+            <p>Shop the latest trends with exclusive deals and premium quality</p>
+            <button class="hero-btn">Shop Now</button>
+        </div>
+    </section>
+
+    <!-- Category Section -->
+    <section class="categories">
+        <h2>Popular Categories</h2>
+        <div class="category-grid">
+            <div class="category-card">
+                <i class="fa fa-laptop"></i>
+                <p>Electronics</p>
+            </div>
+            <div class="category-card">
+                <i class="fa fa-shirt"></i>
+                <p>Fashion</p>
+            </div>
+            <div class="category-card">
+                <i class="fa fa-home"></i>
+                <p>Home</p>
+            </div>
+            <div class="category-card">
+                <i class="fa fa-gamepad"></i>
+                <p>Gaming</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section class="products-section">
+        <div class="section-header">
+            <h2>Featured Products</h2>
+            <p>Handpicked items just for you</p>
+        </div>
+        <div class="products" id="product-list"></div>
+    </section>
+
+    <!-- Cart Sidebar -->
+    <div class="cart" id="cart">
+        <div class="cart-header">
+            <h2>Shopping Cart</h2>
+            <button class="close-cart" onclick="toggleCart()" aria-label="Close cart"><i class="fa fa-times"></i></button>
+        </div>
+        <ul id="cart-items" class="cart-items"></ul>
+        <div class="cart-footer">
+            <div class="cart-total">
+                <span>Subtotal:</span>
+                <span id="cart-total">$0.00</span>
+            </div>
+            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+            <button class="continue-shopping-btn" onclick="toggleCart()">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="login-box" class="login-box">
+        <div class="login-content">
+            <button class="modal-close" onclick="document.getElementById('login-box').classList.remove('active')" aria-label="Close modal">
+                <i class="fa fa-times"></i>
+            </button>
+            <h2>Welcome Back</h2>
+            <p>Sign in to your account</p>
+            <input type="text" id="username" placeholder="Username or Email" class="login-input">
+            <input type="password" id="password" placeholder="Password" class="login-input">
+            <button class="login-submit-btn" onclick="login()">Sign In</button>
+            <div class="forgot-password-link">
+                <a href="#" onclick="showForgotPassword()">
+                    <i class="fa fa-key" style="margin-right: 5px;"></i>Forgot Password?
+                </a>
+            </div>
+            <p class="signup-link">Don't have an account? <a href="#" onclick="showRegister()">Sign up here</a></p>
+        </div>
+    </div>
+
+    <!-- Register Modal -->
+    <div id="register-box" class="login-box">
+        <div class="login-content">
+            <button class="modal-close" onclick="document.getElementById('register-box').classList.remove('active')" aria-label="Close modal">
+                <i class="fa fa-times"></i>
+            </button>
+            <h2>Create Account</h2>
+            <p>Join us today</p>
+            <input type="text" id="reg-username" placeholder="Username" class="login-input">
+            <input type="email" id="reg-email" placeholder="Email" class="login-input">
+            <input type="password" id="reg-password" placeholder="Password" class="login-input">
+            <input type="password" id="reg-confirm-password" placeholder="Confirm Password" class="login-input">
+            <button class="login-submit-btn" onclick="register()">Create Account</button>
+            <p class="signup-link">Already have an account? <a href="#" onclick="showLoginFromRegister()">Sign in here</a></p>
+        </div>
+    </div>
+
+    <!-- Forgot Password Modal -->
+    <div id="forgot-password-box" class="login-box">
+        <div class="login-content">
+            <button class="modal-close" onclick="document.getElementById('forgot-password-box').classList.remove('active')" aria-label="Close modal">
+                <i class="fa fa-times"></i>
+            </button>
+            <h2><i class="fa fa-key" style="margin-right: 8px;"></i>Reset Password</h2>
+            <p>Enter your email address and we'll send you a reset link</p>
+            <input type="email" id="reset-email" placeholder="Email Address" class="login-input">
+            <button class="login-submit-btn" onclick="requestPasswordReset()">Send Reset Link</button>
+            <p class="signup-link">Remember your password? <a href="#" onclick="showLoginFromForgot()">Sign in here</a></p>
+        </div>
+    </div>
+
+    <!-- Reset Password Modal -->
+    <div id="reset-password-box" class="login-box">
+        <div class="login-content">
+            <button class="modal-close" onclick="document.getElementById('reset-password-box').classList.remove('active')" aria-label="Close modal">
+                <i class="fa fa-times"></i>
+            </button>
+            <h2><i class="fa fa-lock" style="margin-right: 8px;"></i>Reset Your Password</h2>
+            <p>Enter the reset token and your new password</p>
+            <input type="text" id="reset-token" placeholder="Reset Token" class="login-input">
+            <input type="password" id="new-password" placeholder="New Password" class="login-input">
+            <input type="password" id="confirm-new-password" placeholder="Confirm New Password" class="login-input">
+            <button class="login-submit-btn" onclick="resetPassword()">Reset Password</button>
+            <p class="signup-link">Remember your password? <a href="#" onclick="showLoginFromReset()">Sign in here</a></p>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h4>About Us</h4>
+                <p>Your trusted online shopping destination for quality products at great prices.</p>
+            </div>
+            <div class="footer-section">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="#">Home</a></li>
+                    <li><a href="#">Products</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h4>Contact Us</h4>
+                <p>Email: support@modernshop.com</p>
+                <p>Phone: +1 (555) 000-0000</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 ModernShop. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="app.js"></script>
+</body>
+</html>
