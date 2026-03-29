@@ -21,15 +21,15 @@
             </div>
             
             <div class="header-actions">
-                <button class="auth-btn" onclick="showLogin()">
+                <button class="btn-secondary auth-btn" onclick="showLogin()">
                     <i class="fa fa-user"></i> Login
                 </button>
-                <div class="cart-btn" onclick="toggleCart()" title="Wishlist">
+                <div class="cart-btn" onclick="toggleWishlist()" title="Wishlist">
                     <i class="fa-regular fa-heart"></i>
                     <span id="wishlist-count" class="badge">0</span>
                 </div>
                 <div class="cart-btn" onclick="toggleCart()" title="Shopping Cart">
-                    <i class="fa fa-shopping-cart"></i>
+                    <i class="fa fa-shopping-cart cart-icon"></i>
                     <span id="cart-count" class="badge">0</span>
                 </div>
             </div>
@@ -41,7 +41,7 @@
         <div class="hero-content">
             <h1>Discover Amazing Products</h1>
             <p>Shop the latest trends with exclusive deals and premium quality</p>
-            <button class="hero-btn">Shop Now</button>
+            <button class="btn-primary hero-btn" onclick="document.querySelector('.products-section').scrollIntoView({behavior: 'smooth'})">Shop Now</button>
         </div>
     </section>
 
@@ -89,8 +89,8 @@
                 <span>Subtotal:</span>
                 <span id="cart-total">$0.00</span>
             </div>
-            <button class="checkout-btn" onclick="checkout()">Proceed to Checkout</button>
-            <button class="continue-shopping-btn" onclick="toggleCart()">Continue Shopping</button>
+            <button class="btn-primary checkout-btn" onclick="checkout()">Proceed to Checkout</button>
+            <button class="btn-secondary continue-shopping-btn" onclick="toggleCart()">Continue Shopping</button>
         </div>
     </div>
 
@@ -104,7 +104,7 @@
             <p>Sign in to your account</p>
             <input type="text" id="username" placeholder="Username or Email" class="login-input">
             <input type="password" id="password" placeholder="Password" class="login-input">
-            <button class="login-submit-btn" onclick="login()">Sign In</button>
+            <button class="btn-primary login-submit-btn" onclick="login()">Sign In</button>
             <div class="forgot-password-link">
                 <a href="#" onclick="showForgotPassword()">
                     <i class="fa fa-key" style="margin-right: 5px;"></i>Forgot Password?
@@ -126,7 +126,7 @@
             <input type="email" id="reg-email" placeholder="Email" class="login-input">
             <input type="password" id="reg-password" placeholder="Password" class="login-input">
             <input type="password" id="reg-confirm-password" placeholder="Confirm Password" class="login-input">
-            <button class="login-submit-btn" onclick="register()">Create Account</button>
+            <button class="btn-primary login-submit-btn" onclick="register()">Create Account</button>
             <p class="signup-link">Already have an account? <a href="#" onclick="showLoginFromRegister()">Sign in here</a></p>
         </div>
     </div>
@@ -140,7 +140,7 @@
             <h2><i class="fa fa-key" style="margin-right: 8px;"></i>Reset Password</h2>
             <p>Enter your email address and we'll send you a reset link</p>
             <input type="email" id="reset-email" placeholder="Email Address" class="login-input">
-            <button class="login-submit-btn" onclick="requestPasswordReset()">Send Reset Link</button>
+            <button class="btn-primary login-submit-btn" onclick="requestPasswordReset()">Send Reset Link</button>
             <p class="signup-link">Remember your password? <a href="#" onclick="showLoginFromForgot()">Sign in here</a></p>
         </div>
     </div>
@@ -156,10 +156,13 @@
             <input type="text" id="reset-token" placeholder="Reset Token" class="login-input">
             <input type="password" id="new-password" placeholder="New Password" class="login-input">
             <input type="password" id="confirm-new-password" placeholder="Confirm New Password" class="login-input">
-            <button class="login-submit-btn" onclick="resetPassword()">Reset Password</button>
+            <button class="btn-primary login-submit-btn" onclick="resetPassword()">Reset Password</button>
             <p class="signup-link">Remember your password? <a href="#" onclick="showLoginFromReset()">Sign in here</a></p>
         </div>
     </div>
+
+    <!-- Notification Container -->
+    <div id="notification-container" class="notification-container"></div>
 
     <!-- Footer -->
     <footer class="footer">

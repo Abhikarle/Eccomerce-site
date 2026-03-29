@@ -50,8 +50,8 @@ function displayProducts(productsToDisplay = products) {
 
   if (productsToDisplay.length === 0) {
     productList.innerHTML = `
-      <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px;">
-        <i class="fa fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 20px;"></i>
+      <div style="grid-column: 1 / -1; text-align: center; padding: 40px 20px; animation: fadeIn 0.3s ease;">
+        <i class="fa fa-search" style="font-size: 48px; color: #ccc; margin-bottom: 20px; animation: pulse 2s infinite;"></i>
         <p style="color: #999; font-size: 18px;">No products found. Try a different search.</p>
       </div>
     `;
@@ -63,7 +63,7 @@ function displayProducts(productsToDisplay = products) {
     const productEl = document.createElement('div');
     productEl.className = 'product';
     productEl.innerHTML = `
-      <img src="${product.image}" alt="${product.name}">
+      <img src="${product.image}" alt="${product.name}" loading="lazy">
       <div class="product-content">
         <h3>${product.name}</h3>
         <p>${product.description || 'High quality product'}</p>
@@ -73,7 +73,7 @@ function displayProducts(productsToDisplay = products) {
           <span class="rating-count">(${Math.floor(Math.random() * 500) + 10} reviews)</span>
         </div>
         <div class="product-actions">
-          <button class="add-to-cart-btn" onclick="addToCart(${product.id})">
+          <button class="btn-primary add-to-cart-btn" onclick="addToCart(${product.id})">
             <i class="fa fa-shopping-cart"></i> Add to Cart
           </button>
           <button class="wishlist-btn ${isWishlisted ? 'liked' : ''}" onclick="toggleWishlist(${product.id})" title="Add to wishlist">
@@ -93,6 +93,14 @@ async function addToCart(productId) {
     return;
   }
 
+  const button = event.target.closest('.add-to-cart-btn');
+  const originalText = button.innerHTML;
+
+  // Show loading state
+  button.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Adding...';
+  button.disabled = true;
+  button.classList.add('loading');
+
   const product = products.find(p => p.id === productId);
   if (!product) return;
 
@@ -111,9 +119,24 @@ async function addToCart(productId) {
     updateCart();
     toggleCart(); // Open the cart sidebar after adding
     showNotification('Product added to cart!');
+
+    // Animate cart icon
+    const cartIcon = document.querySelector('.cart-icon');
+    if (cartIcon) {
+      cartIcon.classList.add('bounce');
+      setTimeout(() => cartIcon.classList.remove('bounce'), 600);
+    }
+
   } catch (err) {
     console.error('Error adding to cart', err);
     showNotification('Unable to add to cart', true);
+  } finally {
+    // Reset button state
+    setTimeout(() => {
+      button.innerHTML = originalText;
+      button.disabled = false;
+      button.classList.remove('loading');
+    }, 1000);
   }
 }
 
@@ -194,7 +217,15 @@ function updateCart() {
   let total = 0;
 
   if (cart.length === 0) {
-    cartItems.innerHTML = '<li style="padding: 20px; text-align: center; color: #6b7280;"><i class="fa fa-shopping-cart" style="font-size: 32px; margin-bottom: 10px; display: block; opacity: 0.5;"></i><p>Your cart is empty</p></li>';
+    cartItems.innerHTML = `
+      <li style="padding: 40px 20px; text-align: center; color: #6b7280; animation: fadeIn 0.3s ease;">
+        <i class="fa fa-shopping-cart" style="font-size: 48px; margin-bottom: 20px; display: block; opacity: 0.5; animation: pulse 2s infinite;"></i>
+        <p style="font-size: 16px; margin-bottom: 20px;">Your cart is empty</p>
+        <button class="btn-secondary" onclick="toggleCart(); document.querySelector('.products-section').scrollIntoView({behavior: 'smooth'});" style="font-size: 14px;">
+          <i class="fa fa-arrow-left"></i> Continue Shopping
+        </button>
+      </li>
+    `;
     cartTotal.textContent = '$0.00';
     return;
   }
@@ -205,12 +236,12 @@ function updateCart() {
     li.className = 'cart-item';
     li.innerHTML = `
       <div style="flex: 1;">
-        <strong style="font-size: 14px;">${item.name}</strong><br>
-        <span style="color: #6366f1; font-weight: 600; font-size: 14px;">$${item.price.toFixed(2)}</span>
+        <strong style="font-size: 14px; margin-bottom: 4px; display: block;">${item.name}</strong>
+        <span style="color: #6366f1; font-weight: 600; font-size: 14px;">$${item.price.toFixed(2)} each</span>
       </div>
       <div style="display: flex; align-items: center; gap: 8px;">
-        <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${item.id}, this.value)" style="width: 40px; padding: 6px; border: 1px solid #e5e7eb; border-radius: 4px; font-size: 13px;">
-        <button onclick="removeFromCart(${item.id})" style="background-color: transparent; color: #ef4444; border: 1px solid #ef4444; padding: 5px 8px; border-radius: 4px; cursor: pointer; font-size: 12px;">
+        <input type="number" value="${item.quantity}" min="1" onchange="updateQuantity(${item.id}, this.value)" class="quantity-input" style="width: 50px; padding: 8px; border: 1px solid #e5e7eb; border-radius: 6px; font-size: 14px; text-align: center;">
+        <button onclick="removeFromCart(${item.id})" class="btn-danger" style="padding: 8px 12px; font-size: 12px;" title="Remove item">
           <i class="fa fa-trash"></i>
         </button>
       </div>
@@ -332,35 +363,26 @@ async function login() {
 }
 
 function showNotification(message, isError = false) {
+  const container = document.getElementById('notification-container');
   const notification = document.createElement('div');
-  notification.style.cssText = `
-    position: fixed;
-    top: 100px;
-    right: 20px;
-    background: ${isError ? '#ef4444' : '#10b981'};
-    color: white;
-    padding: 16px 20px;
-    border-radius: 8px;
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
-    z-index: 1002;
-    animation: slideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    font-size: 14px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  `;
+  notification.className = `notification ${isError ? 'error' : 'success'}`;
   notification.innerHTML = `
     <i class="fa fa-${isError ? 'exclamation-circle' : 'check-circle'}"></i>
     <span>${message}</span>
+    <button class="notification-close" onclick="this.parentElement.remove()" aria-label="Close notification">
+      <i class="fa fa-times"></i>
+    </button>
   `;
-  document.body.appendChild(notification);
-  setTimeout(() => {
-    notification.style.animation = 'slideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1)';
-    setTimeout(() => notification.remove(), 300);
-  }, 2500);
-}
 
+  container.appendChild(notification);
+
+  // Auto remove after 3 seconds
+  setTimeout(() => {
+    if (notification.parentElement) {
+      notification.classList.add('fade-out');
+      setTimeout(() => notification.remove(), 300);
+    }
+  }, 3000);
 const style = document.createElement('style');
 style.textContent = `
   @keyframes slideIn { from { opacity: 0; transform: translateX(50px);} to {opacity: 1; transform: translateX(0);} }
