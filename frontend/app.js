@@ -5,6 +5,7 @@ let currentUser = null;
 let authToken = localStorage.getItem('authToken');
 
 const API_BASE = 'http://localhost:3000/api';
+let currentFilteredProducts = null;
 
 document.addEventListener('DOMContentLoaded', async () => {
   checkAuthStatus();
@@ -76,7 +77,7 @@ function displayProducts(productsToDisplay = products) {
           <button class="btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, event)">
             <i class="fa fa-shopping-cart"></i> Add to Cart
           </button>
-          <button class="wishlist-btn ${isWishlisted ? 'liked' : ''}" onclick="toggleWishlist(${product.id})" title="Add to wishlist">
+          <button class="wishlist-btn ${isWishlisted ? 'liked' : ''}" onclick="toggleWishlist(${product.id}, event)" title="Add to wishlist">
             <i class="fa-${isWishlisted ? 'solid' : 'regular'} fa-heart"></i>
           </button>
         </div>
@@ -292,7 +293,7 @@ function renderWishlist() {
         <strong style="font-size: 14px; margin-bottom: 4px; display: block;">${item.name}</strong>
         <span style="color: #6366f1; font-weight: 600; font-size: 14px;">$${item.price.toFixed(2)}</span>
       </div>
-      <button onclick="toggleWishlist(${item.id})" class="btn-danger" style="padding: 8px 12px; font-size: 12px;" title="Remove from wishlist">
+      <button onclick="toggleWishlist(${item.id}, event)" class="btn-danger" style="padding: 8px 12px; font-size: 12px;" title="Remove from wishlist">
         <i class="fa fa-trash"></i>
       </button>
     `;
@@ -300,8 +301,19 @@ function renderWishlist() {
   });
 }
 
-function toggleWishlist(productId) {
+async function toggleWishlist(productId, event) {
   const index = wishlist.findIndex(item => item.id === productId);
+
+  // Add fade-out animation if removed from the wishlist sidebar
+  if (index > -1 && event) {
+    const itemEl = event.target.closest('.cart-item');
+    if (itemEl && event.target.closest('#wishlist-items')) {
+      itemEl.classList.add('wishlist-item-fade-out');
+      // Wait for the animation to finish before removing the element from DOM
+      await new Promise(resolve => setTimeout(resolve, 300));
+    }
+  }
+
   if (index > -1) {
     wishlist.splice(index, 1);
   } else {
@@ -310,7 +322,8 @@ function toggleWishlist(productId) {
   }
   localStorage.setItem('wishlist', JSON.stringify(wishlist));
   updateWishlistCount();
-  displayProducts();
+  renderWishlist();
+  displayProducts(currentFilteredProducts || products);
   showNotification(index > -1 ? 'Removed from wishlist!' : 'Added to wishlist!');
 }
 
@@ -330,11 +343,12 @@ function handleSearch(e) {
   const searchQuery = e.target.value.toLowerCase().trim();
   
   if (searchQuery === '') {
+    currentFilteredProducts = null;
     displayProducts();
     return;
   }
   
-  const filteredProducts = products.filter(product => {
+  currentFilteredProducts = products.filter(product => {
     const matchesName = product.name.toLowerCase().includes(searchQuery);
     const matchesDescription = (product.description || '').toLowerCase().includes(searchQuery);
     const matchesPrice = product.price.toString().includes(searchQuery);
@@ -342,7 +356,7 @@ function handleSearch(e) {
     return matchesName || matchesDescription || matchesPrice;
   });
   
-  displayProducts(filteredProducts);
+  displayProducts(currentFilteredProducts);
 }
 
 function showLogin() {

@@ -1201,6 +1201,16 @@ body {
     }
 }
 
+/* Wishlist removal animation */
+@keyframes wishlistFadeOut {
+    from { opacity: 1; transform: translateX(0); }
+    to { opacity: 0; transform: translateX(30px); }
+}
+
+.wishlist-item-fade-out {
+    animation: wishlistFadeOut 0.3s ease-out forwards;
+}
+
 @media (max-width: 768px) {
     .header-content {
         flex-wrap: wrap;
