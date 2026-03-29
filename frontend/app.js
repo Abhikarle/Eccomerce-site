@@ -73,7 +73,7 @@ function displayProducts(productsToDisplay = products) {
           <span class="rating-count">(${Math.floor(Math.random() * 500) + 10} reviews)</span>
         </div>
         <div class="product-actions">
-          <button class="btn-primary add-to-cart-btn" onclick="addToCart(${product.id})">
+          <button class="btn-primary add-to-cart-btn" onclick="addToCart(${product.id}, event)">
             <i class="fa fa-shopping-cart"></i> Add to Cart
           </button>
           <button class="wishlist-btn ${isWishlisted ? 'liked' : ''}" onclick="toggleWishlist(${product.id})" title="Add to wishlist">
@@ -86,7 +86,7 @@ function displayProducts(productsToDisplay = products) {
   });
 }
 
-async function addToCart(productId) {
+async function addToCart(productId, event) {
   if (!authToken) {
     showNotification('Please login to add items to cart', true);
     showLogin();
@@ -383,6 +383,8 @@ function showNotification(message, isError = false) {
       setTimeout(() => notification.remove(), 300);
     }
   }, 3000);
+}
+
 const style = document.createElement('style');
 style.textContent = `
   @keyframes slideIn { from { opacity: 0; transform: translateX(50px);} to {opacity: 1; transform: translateX(0);} }
@@ -604,5 +606,15 @@ function showForgotPassword() {
 
 function showLoginFromForgot() {
   document.getElementById('forgot-password-box').classList.remove('active');
+  document.getElementById('login-box').classList.add('active');
+}
+
+function showLoginFromRegister() {
+  document.getElementById('register-box').classList.remove('active');
+  document.getElementById('login-box').classList.add('active');
+}
+
+function showLoginFromReset() {
+  document.getElementById('reset-password-box').classList.remove('active');
   document.getElementById('login-box').classList.add('active');
 }

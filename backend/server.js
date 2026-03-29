@@ -184,6 +184,16 @@ app.post('/api/auth/forgot-password', async (req, res) => {
   }
 });
 
+// GET handler for forgot-password (returns info about the endpoint)
+app.get('/api/auth/forgot-password', (req, res) => {
+  res.json({
+    message: 'Password reset endpoint - use POST with email in body',
+    method: 'POST',
+    body: { email: 'string' },
+    example: 'curl -X POST http://localhost:3000/api/auth/forgot-password -H "Content-Type: application/json" -d \'{"email":"user@example.com"}\''
+  });
+});
+
 app.post('/api/auth/reset-password', async (req, res) => {
   try {
     const { token, newPassword } = req.body;
