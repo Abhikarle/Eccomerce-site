@@ -263,6 +263,43 @@ function toggleCart() {
   updateCart();
 }
 
+function showWishlistPanel() {
+  const wishlistEl = document.getElementById('wishlist');
+  wishlistEl.classList.toggle('active');
+  renderWishlist();
+}
+
+function renderWishlist() {
+  const wishlistItemsEl = document.getElementById('wishlist-items');
+  wishlistItemsEl.innerHTML = '';
+
+  if (wishlist.length === 0) {
+    wishlistItemsEl.innerHTML = `
+      <li style="padding: 40px 20px; text-align: center; color: #6b7280; animation: fadeIn 0.3s ease;">
+        <i class="fa fa-heart" style="font-size: 48px; margin-bottom: 20px; display: block; opacity: 0.5;"></i>
+        <p style="font-size: 16px; margin-bottom: 20px;">Your wishlist is empty</p>
+      </li>
+    `;
+    return;
+  }
+
+  wishlist.forEach(item => {
+    const li = document.createElement('li');
+    li.className = 'cart-item';
+    li.style.padding = '10px 8px';
+    li.innerHTML = `
+      <div style="flex: 1;">
+        <strong style="font-size: 14px; margin-bottom: 4px; display: block;">${item.name}</strong>
+        <span style="color: #6366f1; font-weight: 600; font-size: 14px;">$${item.price.toFixed(2)}</span>
+      </div>
+      <button onclick="toggleWishlist(${item.id})" class="btn-danger" style="padding: 8px 12px; font-size: 12px;" title="Remove from wishlist">
+        <i class="fa fa-trash"></i>
+      </button>
+    `;
+    wishlistItemsEl.appendChild(li);
+  });
+}
+
 function toggleWishlist(productId) {
   const index = wishlist.findIndex(item => item.id === productId);
   if (index > -1) {

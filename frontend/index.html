@@ -24,7 +24,7 @@
                 <button class="btn-secondary auth-btn" onclick="showLogin()">
                     <i class="fa fa-user"></i> Login
                 </button>
-                <div class="cart-btn" onclick="toggleWishlist()" title="Wishlist">
+                <div class="cart-btn" onclick="showWishlistPanel()" title="Wishlist">
                     <i class="fa-regular fa-heart"></i>
                     <span id="wishlist-count" class="badge">0</span>
                 </div>
@@ -91,6 +91,18 @@
             </div>
             <button class="btn-primary checkout-btn" onclick="checkout()">Proceed to Checkout</button>
             <button class="btn-secondary continue-shopping-btn" onclick="toggleCart()">Continue Shopping</button>
+        </div>
+    </div>
+
+    <!-- Wishlist Sidebar -->
+    <div class="cart wishlist" id="wishlist">
+        <div class="cart-header">
+            <h2>Wishlist</h2>
+            <button class="close-cart" onclick="showWishlistPanel()" aria-label="Close wishlist"><i class="fa fa-times"></i></button>
+        </div>
+        <ul id="wishlist-items" class="cart-items"></ul>
+        <div class="cart-footer">
+            <button class="btn-secondary continue-shopping-btn" onclick="showWishlistPanel()">Close</button>
         </div>
     </div>
 
