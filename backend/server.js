@@ -23,7 +23,7 @@ const products = [
   { id: 10, name: 'Fitness Tracker', price: 89, image: 'https://images.unsplash.com/photo-1575311373937-040b8e1fd5b6?w=400&h=300&fit=crop' }
 ];
 
-let cart = [];
+let userCarts = {}; // Store carts by userId: { userId: [items] }
 let users = []; // In production, use a database
 let resetTokens = {}; // Store reset tokens temporarily (in production, use database with expiration)
 
@@ -248,40 +248,55 @@ app.get('/api/products', (req, res) => {
 });
 
 app.get('/api/cart', authenticateToken, (req, res) => {
-  res.json(cart);
+  const userId = req.user.id;
+  if (!userCarts[userId]) userCarts[userId] = [];
+  res.json(userCarts[userId]);
 });
 
 app.post('/api/cart', authenticateToken, (req, res) => {
+  const userId = req.user.id;
+  if (!userCarts[userId]) userCarts[userId] = [];
+  
   const item = req.body;
   if (!item || !item.id) return res.status(400).json({ error: 'Invalid item' });
 
-  const existing = cart.find((p) => p.id === item.id);
+  const existing = userCarts[userId].find((p) => p.id === item.id);
   if (existing) {
     existing.quantity += item.quantity || 1;
   } else {
-    cart.push({ ...item, quantity: item.quantity || 1 });
+    userCarts[userId].push({ ...item, quantity: item.quantity || 1 });
   }
 
-  res.json(cart);
+  res.json(userCarts[userId]);
 });
 
 app.put('/api/cart/:id', authenticateToken, (req, res) => {
+  const userId = req.user.id;
   const id = Number(req.params.id);
   const { quantity } = req.body;
-  const item = cart.find((p) => p.id === id);
+  
+  if (!userCarts[userId]) return res.status(404).json({ error: 'Cart not found' });
+  
+  const item = userCarts[userId].find((p) => p.id === id);
   if (!item) return res.status(404).json({ error: 'Not found' });
+  
   item.quantity = Math.max(1, Number(quantity) || 1);
-  res.json(cart);
+  res.json(userCarts[userId]);
 });
 
 app.delete('/api/cart/:id', authenticateToken, (req, res) => {
+  const userId = req.user.id;
   const id = Number(req.params.id);
-  cart = cart.filter((p) => p.id !== id);
-  res.json(cart);
+  
+  if (userCarts[userId]) {
+    userCarts[userId] = userCarts[userId].filter((p) => p.id !== id);
+  }
+  res.json(userCarts[userId] || []);
 });
 
 app.delete('/api/cart', authenticateToken, (req, res) => {
-  cart = [];
+  const userId = req.user.id;
+  userCarts[userId] = [];
   res.json({ ok: true });
 });
 

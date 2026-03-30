@@ -4,36 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Modern Shop</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header class="header">
-        <div class="logo">MyShop</div>
-        <input id="search" type="text" placeholder="Search products...">
-        <div class="cart-btn" onclick="toggleCart()">
-            <button type="button" onclick="showLogin()">Login</button>
-            <i class="fa-regular fa-heart"></i>
-            <span id="wishlist-count">0</span>
-            <i class="fa fa-shopping-cart"></i>
-            <span id="cart-count">0</span>
+        <div class="container header-container">
+            <div class="logo">Modern<span>Shop</span></div>
+            
+            <div class="search-wrapper">
+                <i class="fa fa-search"></i>
+                <input id="search" type="text" placeholder="Search products...">
+            </div>
+
+            <div class="header-actions">
+                <button id="login-btn" class="btn-outline" type="button" onclick="showLogin()">Login</button>
+                <div id="user-menu" class="user-profile" style="display: none;">
+                    <span id="username-display"></span>
+                    <button class="btn-text" type="button" onclick="logout()">Logout</button>
+                </div>
+                <div class="action-icon wishlist-trigger" onclick="showWishlistPanel()">
+                    <i class="fa-regular fa-heart"></i>
+                    <span id="wishlist-count" class="badge">0</span>
+                </div>
+                <div class="action-icon cart-btn" onclick="toggleCart()">
+                    <i class="fa fa-shopping-cart cart-icon"></i>
+                    <span id="cart-count" class="badge">0</span>
+                </div>
+            </div>
         </div>
     </header>
-    <section class="products" id="product-list"></section>
+
+    <main class="container products-section">
+        <section class="products-grid" id="product-list"></section>
+    </main>
+
+    <div id="notification-container" class="notification-container"></div>
+
      <!-- Cart Sidebar-->
-    <div class="cart" id="cart">
-        <h2>your cart</h2>
+    <div class="sidebar" id="cart">
+        <div class="sidebar-header">
+            <h2>Your Cart</h2>
+            <button class="close-btn" onclick="toggleCart()">&times;</button>
+        </div>
         <ul id="cart-items"></ul>
-        <h3>Total: <span id="cart-total">0</span></h3>
-        <button  type='button' onclick="checkout()">Checkout</button>
+        <div class="sidebar-footer">
+            <div class="total-row">Total: <span id="cart-total">$0.00</span></div>
+            <button class="btn-primary full-width" onclick="checkout()">Checkout</button>
+        </div>
     </div>
+
+    <!-- Wishlist Sidebar -->
+    <div class="sidebar" id="wishlist">
+        <div class="sidebar-header">
+            <h2>Your Wishlist</h2>
+            <button class="close-btn" onclick="showWishlistPanel()">&times;</button>
+        </div>
+        <ul id="wishlist-items"></ul>
+    </div>
+
     <!-- Login -->
-    <div id="login-box" class="login-box">
-        <h2>Login</h2>
-        <input type="text" id="username" placeholder="Username">
-        <input type="password" id="password" placeholder="Password">
-        <button type="button" onclick="login()">Login</button>
-        <button type="button"style="text-align: center; margin-top: 15px; cursor: pointer;" onclick="document.getElementById('login-box').classList.remove('active')">✕ Close</button>
+    <div id="login-box" class="modal">
+        <div class="modal-content">
+            <h2>Welcome Back</h2>
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <input type="text" id="username" placeholder="Username" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            </div>
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <input type="password" id="password" placeholder="Password" style="width: 100%; padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+            </div>
+            <button class="btn-primary full-width" type="button" onclick="login()">Login</button>
+            <button class="btn-text full-width" onclick="document.getElementById('login-box').classList.remove('active')" style="margin-top: 10px;">Cancel</button>
+        </div>
     </div>
     <script src="app.js"></script>
 </body>
