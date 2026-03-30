@@ -1,4 +1,12 @@
 {
+  "name": "modern-shop",
+  "version": "1.0.0",
+  "description": "Full-stack E-commerce Platform",
+  "scripts": {
+    "start-backend": "node backend/server.js",
+    "start-frontend": "node frontend/server.js",
+    "test": "node test-app.js"
+  },
   "dependencies": {
     "node-fetch": "^3.3.2"
   }
